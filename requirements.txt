@@ -2,4 +2,4 @@ streamlit
 numpy
 pandas
 WordCloud
-matplotlib.pyplot
+matplotlib
