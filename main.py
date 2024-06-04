@@ -249,8 +249,8 @@ elif survey == '(BEFORE)':
         python = 4
         data = 5
 
-        st.write(f"**spotfire 기초 및 생성형AI = {spotfire}**")
-        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초 = {python}**")
+        st.write(f"**spotfire 기초 및 생성형AI, Skillup-AI = {spotfire}**")
+        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초, Skillup-데이터분석, Skillup-Spotfire = {python}**")
         st.write(f"**(C/D)전처리 = {data}**")
 
         threshold = st.number_input("설문조사 미참여 인원 삭제 임계값:", value=4)
