@@ -271,7 +271,18 @@ elif survey == '(BEFORE)':
         # 새로운 엑셀 파일로 저장
         output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
         if st.button("저장하기"):
-            df.to_excel(output_filename, index=False)
+            # 새로운 엑셀 파일을 메모리에 저장
+            towrite = io.BytesIO()
+            df.to_excel(towrite, index=False, engine='xlsxwriter')
+            towrite.seek(0)
+
+            # 다운로드 버튼 생성
+            st.download_button(
+                label="Download Excel File",
+                data=towrite,
+                file_name=output_filename,
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
 
 
@@ -344,8 +355,19 @@ else:
         st.write("빈 셀을 채운 후 숫자 열의 평균:")
         st.write(column_means_updated)
 
-        # 4. 새로운 엑셀 파일로 저장
-        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사후)_강사이름_날짜):", value="새로운_파일_사후.xlsx")
+        # 새로운 엑셀 파일로 저장
+        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
         if st.button("저장하기"):
-            df.to_excel(output_filename, index=False)
+            # 새로운 엑셀 파일을 메모리에 저장
+            towrite = io.BytesIO()
+            df.to_excel(towrite, index=False, engine='xlsxwriter')
+            towrite.seek(0)
+
+            # 다운로드 버튼 생성
+            st.download_button(
+                label="Download Excel File",
+                data=towrite,
+                file_name=output_filename,
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
