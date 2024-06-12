@@ -4,6 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import re
+import io
 
 st.title('설문조사')
 st.set_option('deprecation.showPyplotGlobalUse', False)
