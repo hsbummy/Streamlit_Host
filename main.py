@@ -4,7 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import re
-import io
+
 
 st.title('설문조사')
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -269,22 +269,11 @@ elif survey == '(BEFORE)':
                     df.loc[row_index, col_name] = most_common_value
 
 
-        # 새로운 엑셀 파일로 저장
-        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
-        if st.button("저장하기"):
-            # 새로운 엑셀 파일을 메모리에 저장
-            towrite = io.BytesIO()
-            df.to_excel(towrite, index=False, engine='xlsxwriter')
-            towrite.seek(0)
-
-            # 다운로드 버튼 생성
-            st.download_button(
-                label="Download Excel File",
-                data=towrite,
-                file_name=output_filename,
-                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            )
-            st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
+    # 새로운 엑셀 파일로 저장
+            output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
+            if st.button("저장하기"):
+                df.to_excel(output_filename, index=False)
+                st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
 
 
 else:
@@ -356,19 +345,8 @@ else:
         st.write("빈 셀을 채운 후 숫자 열의 평균:")
         st.write(column_means_updated)
 
-        # 새로운 엑셀 파일로 저장
+   # 새로운 엑셀 파일로 저장
         output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
         if st.button("저장하기"):
-            # 새로운 엑셀 파일을 메모리에 저장
-            towrite = io.BytesIO()
-            df.to_excel(towrite, index=False, engine='xlsxwriter')
-            towrite.seek(0)
-
-            # 다운로드 버튼 생성
-            st.download_button(
-                label="Download Excel File",
-                data=towrite,
-                file_name=output_filename,
-                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            )
+            df.to_excel(output_filename, index=False)
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
