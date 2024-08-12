@@ -7,7 +7,6 @@ import re
 
 
 st.title('설문조사')
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.info(" 엑셀 파일 업로드", icon="💾")
 
