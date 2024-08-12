@@ -250,8 +250,8 @@ elif survey == '(BEFORE)':
         python = 4
         data = 5
 
-        st.write(f"**spotfire 기초 및 생성형AI, Skillup-AI = {spotfire}**")
-        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초, Skillup-데이터분석, Skillup-Spotfire = {python}**")
+        st.write(f"**spotfire 기초 및 생성형AI, Skillup-AI, Spotfire-데이터시각화 = {spotfire}**")
+        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초, AI Expert, Skillup-데이터분석, Skillup-Spotfire,Excel VBA, Python-DT, Python-데이터분석, Python-생성형AI = {python}**")
         st.write(f"**(C/D)전처리 = {data}**")
 
         threshold = st.number_input("설문조사 미참여 인원 삭제 임계값:", value=4)
@@ -269,12 +269,11 @@ elif survey == '(BEFORE)':
                     df.loc[row_index, col_name] = most_common_value
 
 
-    # 새로운 엑셀 파일로 저장
-            output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
-            if st.button("저장하기"):
-                df.to_excel(output_filename, index=False)
-                st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
-
+   # 새로운 엑셀 파일로 저장
+        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
+        if st.button("저장하기"):
+            df.to_excel(output_filename, index=False)
+            st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
 
 else:
     # 엑셀 파일 업로드
@@ -307,8 +306,8 @@ else:
         python1 = 19
         data1 = 20
 
-        st.write(f"**spotfire 기초 및 생성형AI = {spotfire1}**")
-        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초 = {python1}**")
+        st.write(f"**spotfire 기초 및 생성형AI, Skillup-AI, Spotfire-데이터시각화 = {spotfire1}**")
+        st.write(f"**spotfire 심화 및 (C/D)파이썬 기초, AI Expert, Skillup-데이터분석, Skillup-Spotfire,Excel VBA, Python-DT, Python-데이터분석, Python-생성형AI = {python1}**")
         st.write(f"**(C/D)전처리 = {data1}**")
 
         threshold = st.number_input("설문조사 미참여 인원 삭제 임계값", value=18)
