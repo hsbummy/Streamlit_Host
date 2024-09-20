@@ -224,6 +224,7 @@ survey = st.radio("설문조사 유형(사전, 사후)", ["SELECT", "(BEFORE)", 
 
 # 엑셀 파일 업로드
 
+
 if survey == 'SELECT':
     st.write("------------유형 선택------------")
 
@@ -234,12 +235,23 @@ elif survey == '(BEFORE)':
         # 엑셀 파일 읽기
         df = pd.read_excel(uploaded_file)
 
+        # E열과 F열의 날짜를 각각 입력받기
+        input_date_E = st.date_input("5번째 열 (E열)에 입력할 날짜를 선택하세요", value=pd.to_datetime('today')).strftime('%Y-%m-%d')
+        input_date_F = st.date_input("6번째 열 (F열)에 입력할 날짜를 선택하세요", value=pd.to_datetime('today')).strftime('%Y-%m-%d')
+
+        # 마지막 데이터가 있는 행까지 찾기 (모든 열 기준)
+        last_row = df[df.notna().any(axis=1)].index[-1]
+
+        # 5번째 열(E열)과 6번째 열(F열)에 입력된 날짜로 채우기
+        df.iloc[0:last_row+1, 4] = input_date_E  # 5번째 열 (E열)
+        df.iloc[0:last_row+1, 5] = input_date_F  # 6번째 열 (F열)
+
         # 고정값으로 범위 지정
-        start_row, end_row = 0, len(df)-1
-        start_col, end_col = 6, len(df.columns)-1
+        start_row, end_row = 0, len(df) - 1
+        start_col, end_col = 6, len(df.columns) - 1
 
         # 지정한 범위에서 빈 셀 개수 계산
-        selected_range = df.iloc[start_row:end_row+1, start_col:end_col+1]
+        selected_range = df.iloc[start_row:end_row + 1, start_col:end_col + 1]
         empty_cells_per_row = selected_range.isnull().sum(axis=1)
 
         # 사용자가 지정한 숫자를 초과하는 빈 셀 개수를 가진 행 삭제
@@ -267,8 +279,11 @@ elif survey == '(BEFORE)':
                 if pd.isna(df.loc[row_index, col_name]):
                     df.loc[row_index, col_name] = most_common_value
 
+        # 4번째 열(D열) 삭제
+        df.drop(df.columns[3], axis=1, inplace=True)
 
-   # 새로운 엑셀 파일로 저장
+
+        # 새로운 엑셀 파일로 저장
         output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
         if st.button("저장하기"):
             df.to_excel(output_filename, index=False)
@@ -277,11 +292,22 @@ elif survey == '(BEFORE)':
 else:
     # 엑셀 파일 업로드
     st.subheader("사후설문조사 - 사용 NO")
-    uploaded_file = st.file_uploader("사후 -  파일 업로드", type=['xlsx'])
+    uploaded_file = st.file_uploader("사후 - 파일 업로드", type=['xlsx'])
 
     if uploaded_file is not None:
         # 엑셀 파일 읽기
         df = pd.read_excel(uploaded_file)
+
+        # E열과 F열의 날짜를 각각 입력받기
+        input_date_E = st.date_input("5번째 열 (E열)에 입력할 날짜를 선택하세요", value=pd.to_datetime('today')).strftime('%Y-%m-%d')
+        input_date_F = st.date_input("6번째 열 (F열)에 입력할 날짜를 선택하세요", value=pd.to_datetime('today')).strftime('%Y-%m-%d')
+
+        # 마지막 데이터가 있는 행까지 찾기 (모든 열 기준)
+        last_row = df[df.notna().any(axis=1)].index[-1]
+
+        # 5번째 열(E열)과 6번째 열(F열)에 입력된 날짜로 채우기
+        df.iloc[0:last_row+1, 4] = input_date_E  # 5번째 열 (E열)
+        df.iloc[0:last_row+1, 5] = input_date_F  # 6번째 열 (F열)
 
         # 1. 사용자가 범위를 지정
         start_row, end_row = 0, 200
@@ -298,7 +324,6 @@ else:
         # 1-3
         start_row3, end_row3 = 0, 200
         start_col3, end_col3 = 21, 30
-
 
         # 2. 빈 셀이 많은 행 제거
         spotfire1 = 18
@@ -343,8 +368,12 @@ else:
         st.write("빈 셀을 채운 후 숫자 열의 평균:")
         st.write(column_means_updated)
 
-   # 새로운 엑셀 파일로 저장
+        # 4번째 열(D열) 삭제
+        df.drop(df.columns[3], axis=1, inplace=True)
+
+        # 새로운 엑셀 파일로 저장
         output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
         if st.button("저장하기"):
             df.to_excel(output_filename, index=False)
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
+
