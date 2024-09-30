@@ -4,6 +4,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import re
+from io import BytesIO
 
 
 st.title('설문조사')
@@ -44,7 +45,7 @@ elif score == "(PYTHON)":
         xls = pd.ExcelFile(uploaded_file)
 
         # 사용자가 지정한 위치에 열을 불러오는 방식
-        positions = [7, 9, 11]  # 7열, 9열, 11열에 해당하는 위치
+        positions = [6, 8, 10]  # 7열, 9열, 11열에 해당하는 위치
 
         # 사용자가 지정한 시트 읽기
         sheet_name1 = '_응시 필수_ 파이썬 과제(3개 문제 중 1개만 진행)'
@@ -55,16 +56,16 @@ elif score == "(PYTHON)":
 
         # 2행부터 끝 행까지 각 행의 최대값을 찾는다.
         for i in range(1, len(df1)):
+            # 7, 9, 11열 중에서 현재 행의 최대값을 찾는다.
             max_val = df1.iloc[i, positions].max()
-            # 최대값이 80 미만인 경우에만 출력한다.
-            if max_val < 80:
-                result_df.loc[len(result_df)] = [df1.iloc[i, 1], df1.iloc[i, 2], max_val]
+
+            # 이름, 이메일, 과제 최대값을 result_df에 추가한다.
+            result_df.loc[len(result_df)] = [df1.iloc[i, 1], df1.iloc[i, 2], max_val]
 
         # 결과를 표 형식으로 출력합니다.
         st.table(result_df)
 
         # 출력된 값의 개수를 카운트합니다.
-        st.write(f"과제 과락 인원: {len(result_df)}")
         st.write("----------------------------------------------------------------------------------")
 
 #---------------------------------------------------------------------------------------
@@ -73,17 +74,23 @@ elif score == "(PYTHON)":
 
         df2 = pd.read_excel(xls, sheet_name2)
 
+        # 데이터를 6번째 열 기준으로 정렬
         df2 = df2.sort_values(df2.columns[6])
 
-        filtered_df2 = df2[df2[df2.columns[6]] < 80]
+        # 모든 데이터를 출력하도록 수정 (필터링 제거)
+        filtered_df2 = df2
 
+        # 전체 데이터의 개수와 80 미만 인원의 개수 구하기
         total_cells2 = df2[df2.columns[6]].count()
-        less_than_80_cells2 = filtered_df2[df2.columns[6]].count()
+        less_than_80_cells2 = df2[df2.columns[6]][df2[df2.columns[6]] < 80].count()
 
-        position_test = [1,2,6]
+        # 출력할 열의 위치
+        position_test = [1, 2, 6]
 
+        # 전체 데이터를 출력
         st.write(f"테스트 응시 인원: {total_cells2} /// 80 미만 인원: {less_than_80_cells2}")
-        st.write(filtered_df2.iloc[:,position_test])
+        st.write(filtered_df2.iloc[:, position_test])
+
 
 # Streamlit에서 파일 업로드
 else:
@@ -281,10 +288,16 @@ elif survey == '(BEFORE)':
 
         # 4번째 열(D열) 삭제
         df.drop(df.columns[3], axis=1, inplace=True)
+        df.insert(1, '빈 열', '')
+        lecture_name = st.text_input("강의명", value="")
+        # 마지막 데이터가 있는 행까지 찾기 (모든 열 기준)
+        last_row = df[df.notna().any(axis=1)].index[-1]
 
+        # 입력받은 강의명으로 빈 열 채우기 (A열과 B열 사이의 2번째 열)
+        df.iloc[0:last_row+1, 1] = lecture_name  # A열과 B열 사이 빈 열에 강의명 입력
 
         # 새로운 엑셀 파일로 저장
-        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
+        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="강의명_사전_날짜.xlsx")
         if st.button("저장하기"):
             df.to_excel(output_filename, index=False)
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
@@ -370,9 +383,16 @@ else:
 
         # 4번째 열(D열) 삭제
         df.drop(df.columns[3], axis=1, inplace=True)
+        df.insert(1, '빈 열', '')
+        lecture_name = st.text_input("강의명", value="")
+        # 마지막 데이터가 있는 행까지 찾기 (모든 열 기준)
+        last_row = df[df.notna().any(axis=1)].index[-1]
+
+        # 입력받은 강의명으로 빈 열 채우기 (A열과 B열 사이의 2번째 열)
+        df.iloc[0:last_row+1, 1] = lecture_name  # A열과 B열 사이 빈 열에 강의명 입력       
 
         # 새로운 엑셀 파일로 저장
-        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="새로운_파일_사전.xlsx")
+        output_filename = st.text_input("저장할 파일명을 입력해주세요(ex.수업명(사전)_강사이름_날짜):", value="강의명_사후_날짜.xlsx")
         if st.button("저장하기"):
             df.to_excel(output_filename, index=False)
             st.success(f"새로운 엑셀 파일 '{output_filename}'로 저장되었습니다.")
